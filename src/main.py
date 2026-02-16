@@ -120,7 +120,7 @@ def compute_ptc(light_df, master_bias, center, dx, dy):
         roi2 = dm.rectangularSelection(I2, center, dx, dy)
 
         signal = roi1.mean()
-        spatial_noise = roi1.std()
+        spatial_noise = np.std(median_stack([roi1, roi2]))
         delta_noise = np.std(roi1 - roi2)/np.sqrt(2)
 
         rows.append({
@@ -202,6 +202,7 @@ def compute_prnu(ptc_df, fwc):
     '''
 
     fig, ax = plt.subplots(1, 1, figsize=(4,4))
+    ax.set_title('PRNU estimate')
     ax.plot(ptc_df['signal'], ptc_df['spatial_noise'])
     #ax.plot(x, result.best_fit)
     ax.plot(df["signal"], prnu*df["signal"]+_)
@@ -512,5 +513,5 @@ if __name__ == '__main__':
         makeHist(light_df.iloc[-1])
 
 
-        #plt.show()
+        plt.show()
 
