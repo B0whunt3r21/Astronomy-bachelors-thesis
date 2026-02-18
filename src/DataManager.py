@@ -13,12 +13,24 @@ class DataManager():
         ])
 
         
-    #Stacks the Images inside the Frames
+    '''
+    @Params:
+        frame.. pandas dataframe
+    @return:
+        stacked_frame.. median-stacked dataframe
+    '''
     def stack(self, frame):
         stacked_Frame = np.median(np.stack(frame.iloc[:, 1].to_numpy()), axis=0)
         return stacked_Frame
 
-       
+    
+
+    '''
+    @Params:
+        path.. project root path to input folder
+    @return:
+        pandas Series with one files data, exp, and time
+    '''
     def openFit(self, path, fileName):
         with fits.open(path+fileName) as fit:
             header = fit[0].header
@@ -27,7 +39,14 @@ class DataManager():
             temp = header['CCD-TEMP']
         return pd.Series([data, exp, temp])
 
-    
+
+
+    '''
+    @Params:
+        path.. project root path to input folder
+    @return:
+        df.. dataframe with data, exp and temp from all images
+    '''
     def fetchFiles(self, path, extension="fit"):
         path = ROOT + path
         files = [f for f in os.listdir(path)] # if f.endswith(extension)] TODO Multi format readin

@@ -22,12 +22,6 @@ import DataManager as DM
         light_df.. flat field dataframe
 '''
 def load_datasets(dm, path):
-    """
-    Reads all FITS files using your DataManager and returns:
-    - bias_df
-    - dark_df
-    - light_df
-    """
     df = dm.fetchFiles(path)
     df["type"] = df["split_names"].apply(lambda x: x[0])
 
