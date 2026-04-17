@@ -90,7 +90,7 @@ ______________________________________________________
 def compute_read_noise(bias_df, center, dx, dy):
     b1 = dm.rectangularSelection(bias_df.iloc[0]["data"], center, dx, dy)
     b2 = dm.rectangularSelection(bias_df.iloc[1]["data"], center, dx, dy)
-    return np.std(constantDifferentiating(b1, b2)/np.sqrt(2))
+    return np.std(constantDifferentiating(b1, b2))/np.sqrt(2)
 
 
 '''
@@ -107,15 +107,18 @@ def compute_ptc(light_df, master_bias, center, dx, dy):
     rows = []
 
     for exp, group in light_df.groupby("exp"):
-        I1 = group["data"].iloc[0] - master_bias
-        I2 = group["data"].iloc[-1] - master_bias
+        data = group["data"].apply(lambda x: x - master_bias)
+
+        I1 = data.iloc[0]
+        I2 = data.iloc[-1]
 
         roi1 = dm.rectangularSelection(I1, center, dx, dy)
         roi2 = dm.rectangularSelection(I2, center, dx, dy)
 
-        signal = roi1.mean()
-        spatial_noise = np.std(median_stack([roi1, roi2]))
-        delta_noise = np.std(roi1 - roi2)/np.sqrt(2)
+        sel = dm.rectangularSelection(median_stack(data), center, dx, dy)
+        signal = sel.mean()
+        spatial_noise = np.std(sel)
+        delta_noise = np.std(constantDifferentiating(roi1, roi2))/np.sqrt(2)
 
         rows.append({
             "exp": exp,
@@ -507,5 +510,5 @@ if __name__ == '__main__':
         makeHist(light_df.iloc[-1])
 
 
-        plt.show()
+        #plt.show()
 
