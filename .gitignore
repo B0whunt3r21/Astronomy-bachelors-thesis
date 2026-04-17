@@ -210,5 +210,7 @@ __marimo__/
 #Project intern
 docs/
 src/data/*
-src/img/
+src/img/*
+!src/data/Meade_LPI_GC/
+
 
